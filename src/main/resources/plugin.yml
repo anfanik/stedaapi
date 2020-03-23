@@ -1,0 +1,4 @@
+name: StedaApi
+version: ${version}
+author: Anfanik
+main: me.anfanik.steda.api.Bootstrap
