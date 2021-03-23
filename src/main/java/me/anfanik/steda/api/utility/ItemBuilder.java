@@ -147,6 +147,10 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         return new PotionBuilder();
     }
 
+    public BannerBuilder bannerBuilder() {
+        return new BannerBuilder();
+    }
+
     @SuppressWarnings("unchecked")
     B getThis() {
         return (B) this;
