@@ -57,6 +57,11 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         return getThis();
     }
 
+    public B setNameUncolored(String name) {
+        metaModifications.add((meta) -> meta.setDisplayName(name));
+        return getThis();
+    }
+
     public B setLore(Collection<String> lore) {
         metaModifications.add(meta -> meta.setLore(new ArrayList<>(TextUtility.colorize(lore))));
         return getThis();
