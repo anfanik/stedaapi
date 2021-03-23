@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -44,6 +45,10 @@ public class TextUtility {
             uncoloredLines.add(uncolorize(line));
         }
         return uncoloredLines;
+    }
+
+    public static String mergeLines(String... lines) {
+        return mergeLines(Arrays.asList(lines));
     }
 
     public static String mergeLines(Collection<String> lines) {
@@ -176,16 +181,26 @@ public class TextUtility {
         return many;
     }
 
+    private static final int CHAT_SIZE = 74;
+
     public static String align(String message) {
-        int length = uncolorize(message).length() / 2;
+        return getAlignSpaces(message) + colorize(message);
+    }
+
+    public static String getAlignSpaces(String message) {
+        int spaces = getAlignSpacesAmount(message);
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 37 - length; ++i) {
+        for (int i = 0; i < spaces; ++i) {
             builder.append(" ");
         }
-        builder.append(message);
 
-        return colorize(builder.toString());
+        return builder.toString();
+    }
+
+    public static int getAlignSpacesAmount(String message) {
+        int length = uncolorize(message).length();
+        return (CHAT_SIZE - length) / 2;
     }
 
     private TextUtility() {

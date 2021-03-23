@@ -22,6 +22,7 @@ public abstract class CommandBase {
     @Getter
     private final String[] aliases;
     @Getter
+    @Setter
     private CommandHandle handler;
 
     public CommandBase(String[] aliases) {
@@ -32,10 +33,39 @@ public abstract class CommandBase {
     @Deprecated
     protected void execute(Executor<?> executor, String[] arguments) {
         executor.sendCommandMessage("Обработчик команды не найден!");
-        throw new IllegalStateException("command handler not found");
+        throw new IllegalStateException("command handler is not set");
     }
 
     protected final void execute0(Executor<?> executor, String[] arguments) {
+        CommandBase handle = this;
+        if (arguments.length > 0) {
+            val subcommand = subcommands.get(arguments[0].toLowerCase());
+            if (subcommand != null) {
+                handle = subcommand;
+            }
+        }
+
+        if (handle == this || !handle.isIgnoreParentsChecks()) {
+            Optional<AccessCheck<Executor<?>>> optional = getAccessChecks().stream()
+                    .filter(check -> !check.checkAccess(executor))
+                    .findAny();
+            if (optional.isPresent()) {
+                AccessCheck<Executor<?>> check = optional.get();
+                executor.sendCommandMessage(check.getErrorMessage(executor));
+                return;
+            }
+        }
+
+        if (handle == this) {
+            getHandler().execute(executor, arguments);
+        } else {
+            String[] subcommandArguments = new String[arguments.length - 1];
+            System.arraycopy(arguments, 1, subcommandArguments, 0, arguments.length - 1);
+            handle.execute0(executor, subcommandArguments);
+        }
+    }
+
+    protected final void execute1(Executor<?> executor, String[] arguments) {
         int argument = 0;
         List<CommandBase> parents = new LinkedList<>();
         CommandBase handle = this;
@@ -68,7 +98,13 @@ public abstract class CommandBase {
 
         String[] handleArguments = new String[arguments.length - argument];
         System.arraycopy(arguments, argument, handleArguments, 0, arguments.length - argument);
-        handle.getHandler().execute(executor, handleArguments);
+
+        val handler = handle.getHandler();
+        if (handler == null) {
+            executor.sendCommandMessage("Обработчик команды не установлен!");
+            throw new IllegalStateException("command handler is null");
+        }
+        handler.execute(executor, handleArguments);
     }
 
     private final Set<AccessCheck<Executor<?>>> accessChecks = new HashSet<>();
@@ -124,15 +160,14 @@ public abstract class CommandBase {
             }
 
             Class<?> first = parameters[0];
-            AccessCheck<Executor<?>> accessCheck = null;
+            AccessCheck<Executor<?>> accessCheck;
             if (first == Executor.class) {
                 accessCheck = executor -> true;
             } else if (first == PlayerExecutor.class) {
                 accessCheck = PlayerExecutor.EXECUTOR_ACCESS_CHECK;
             } else if (first == ConsoleExecutor.class) {
                 accessCheck = ConsoleExecutor.EXECUTOR_ACCESS_CHECK;
-            }
-            if (accessCheck == null) {
+            } else {
                 continue;
             }
 
@@ -147,18 +182,20 @@ public abstract class CommandBase {
                 useArguments = false;
             }
 
-            CommandHandle handle = new CommandHandle() {
+            this.handler = new CommandHandle() {
                 @SneakyThrows
                 public void execute(Executor<?> executor, String[] arguments) {
-                    if (useArguments) {
-                        method.invoke(CommandBase.this, parameters[0].cast(executor), arguments);
+                    if (accessCheck.checkAccess(executor)) {
+                        if (useArguments) {
+                            method.invoke(CommandBase.this, parameters[0].cast(executor), arguments);
+                        } else {
+                            method.invoke(CommandBase.this, parameters[0].cast(executor));
+                        }
                     } else {
-                        method.invoke(CommandBase.this, parameters[0].cast(executor));
+                        executor.sendCommandMessage(accessCheck.getErrorMessage(executor));
                     }
                 }
             };
-            addAccessCheck(accessCheck);
-            this.handler = handle;
         }
         //Legacy support
         if (handler == null) {
@@ -201,15 +238,14 @@ public abstract class CommandBase {
             }
 
             Class<?> first = parameters[0];
-            AccessCheck<Executor<?>> accessCheck = null;
+            AccessCheck<Executor<?>> accessCheck;
             if (first == Executor.class) {
                 accessCheck = executor -> true;
             } else if (first == PlayerExecutor.class) {
                 accessCheck = PlayerExecutor.EXECUTOR_ACCESS_CHECK;
             } else if (first == ConsoleExecutor.class) {
                 accessCheck = ConsoleExecutor.EXECUTOR_ACCESS_CHECK;
-            }
-            if (accessCheck == null) {
+            } else {
                 continue;
             }
 
@@ -228,15 +264,18 @@ public abstract class CommandBase {
                 @CommandHandler
                 @SneakyThrows
                 protected void execute(Executor<?> executor, String[] arguments) {
-                    if (useArguments) {
-                        method.invoke(CommandBase.this, parameters[0].cast(executor), arguments);
+                    if (accessCheck.checkAccess(executor)) {
+                        if (useArguments) {
+                            method.invoke(CommandBase.this, parameters[0].cast(executor), arguments);
+                        } else {
+                            method.invoke(CommandBase.this, parameters[0].cast(executor));
+                        }
                     } else {
-                        method.invoke(CommandBase.this, parameters[0].cast(executor));
+                        executor.sendCommandMessage(accessCheck.getErrorMessage(executor));
                     }
                 }
             };
             handle.setIgnoreParentsChecks(handle.isIgnoreParentsChecks());
-            handle.addAccessCheck(accessCheck);
             handle.loadSubcommands();
             addSubcommand(handle);
         }

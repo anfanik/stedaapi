@@ -197,9 +197,15 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     public class NbtBuilder {
 
         private Map<String, String> nbtTags = new HashMap<>();
+        private List<String> tagsToRemove = new ArrayList<>();
 
         public NbtBuilder setTag(String key, String value) {
             nbtTags.put(key, value);
+            return this;
+        }
+
+        public NbtBuilder removeTag(String key) {
+            tagsToRemove.add(key);
             return this;
         }
 
@@ -209,6 +215,7 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
                 WrappedNmsItemStack nmsItemStack = craftItemStack.asNmsCopy();
                 WrappedNbtTagCompound tagCompound = nmsItemStack.getTag();
                 nbtTags.forEach(tagCompound::setString);
+                tagsToRemove.forEach(tagCompound::remove);
                 nmsItemStack.setTag(tagCompound);
                 item = WrappedCraftItemStack.get().asBukkitCopy(nmsItemStack);
                 return item;

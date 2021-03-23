@@ -2,6 +2,7 @@ package me.anfanik.steda.api.menu;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.anfanik.steda.api.menu.button.ClickCallback;
 import me.anfanik.steda.api.menu.button.MenuButton;
 import me.anfanik.steda.api.menu.filling.FillingStrategy;
 import me.anfanik.steda.api.utility.TextUtility;
@@ -10,10 +11,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -53,6 +56,12 @@ public class Menu<S extends MenuSession> {
 
     public void addCloseCallback(Consumer<S> callback) {
         closeCallbacks.add(callback);
+    }
+
+    private final List<ClickCallback> playerInventoryCallbacks = new ArrayList<>();
+
+    public void addPlayerInventoryCallback(ClickCallback callback) {
+        playerInventoryCallbacks.add(callback);
     }
 
     public Menu(InventoryType inventoryType, int slots, Function<Player, S> sessionGenerator) {
@@ -102,6 +111,10 @@ public class Menu<S extends MenuSession> {
         return true;
     }
 
+    void processPlayerInventoryClick(MenuSession session, ClickType clickType, int slot) {
+        playerInventoryCallbacks.forEach(callback -> callback.process(session.getPlayer(), clickType, slot));
+    }
+
     void processOpen(S session) {
         openCallbacks.forEach(callback -> callback.accept(session));
     }
@@ -148,6 +161,8 @@ public class Menu<S extends MenuSession> {
 
         private List<Consumer<S>> closeCallbacks = new ArrayList<>();
 
+        private final List<ClickCallback> playerInventoryCallbacks = new ArrayList<>();
+
         public Builder<S> setType(InventoryType type) {
             this.type = type;
             return this;
@@ -183,6 +198,11 @@ public class Menu<S extends MenuSession> {
             return this;
         }
 
+        public Builder<S> addPlayerInventoryCallback(ClickCallback callback) {
+            playerInventoryCallbacks.add(callback);
+            return this;
+        }
+
         public Menu<S> build() {
             if (size == -1) {
                 size = type.getDefaultSize();
@@ -194,6 +214,7 @@ public class Menu<S extends MenuSession> {
             menu.setLockUserInventory(lockUserInventory);
             openCallbacks.forEach(menu::addOpenCallback);
             closeCallbacks.forEach(menu::addCloseCallback);
+            playerInventoryCallbacks.forEach(menu::addPlayerInventoryCallback);
 
             return menu;
         }

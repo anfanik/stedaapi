@@ -86,6 +86,8 @@ public class MenuService implements Listener {
             MenuSession session = Menu.getSession(topInventory);
             Menu<?> menu = session.getMenu();
             event.setCancelled(menu.isLockUserInventory());
+
+            menu.processPlayerInventoryClick(session, event.getClick(), event.getSlot());
         }
     }
 

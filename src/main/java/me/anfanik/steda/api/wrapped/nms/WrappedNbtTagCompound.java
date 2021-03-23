@@ -1,8 +1,6 @@
 package me.anfanik.steda.api.wrapped.nms;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import me.anfanik.steda.api.wrapped.MinecraftVersion;
 
 /**
@@ -25,6 +23,8 @@ public interface WrappedNbtTagCompound {
     }
 
     //void set(String key, WrappedNbtBase nbtBase);
+    String get(String key);
+    void remove(String key);
     void setString(String key, String value);
     void setBoolean(String key, boolean value);
     void setByte(String key, byte value);
@@ -53,6 +53,23 @@ public interface WrappedNbtTagCompound {
 
         @Getter
         private final net.minecraft.server.v1_8_R3.NBTTagCompound handle;
+
+        @Override
+        @SneakyThrows
+        public String get(String key) {
+            val base = handle.get(key);
+            if (base == null) {
+                return null;
+            }
+            val field = base.getClass().getDeclaredField("data");
+            field.setAccessible(true);
+            return field.get(base).toString();
+        }
+
+        @Override
+        public void remove(String key) {
+            handle.remove(key);
+        }
 
         @Override
         public void setString(String key, String value) {
@@ -123,6 +140,23 @@ public interface WrappedNbtTagCompound {
 
         @Getter
         private final net.minecraft.server.v1_12_R1.NBTTagCompound handle;
+
+        @Override
+        @SneakyThrows
+        public String get(String key) {
+            val base = handle.get(key);
+            if (base == null) {
+                return null;
+            }
+            val field = base.getClass().getDeclaredField("data");
+            field.setAccessible(true);
+            return field.get(base).toString();
+        }
+
+        @Override
+        public void remove(String key) {
+            handle.remove(key);
+        }
 
         @Override
         public void setString(String key, String value) {

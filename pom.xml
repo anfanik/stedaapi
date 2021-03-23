@@ -6,7 +6,7 @@
 
     <groupId>me.anfanik.steda</groupId>
     <artifactId>StedaApi</artifactId>
-    <version>1.13-SNAPSHOT</version>
+    <version>1.16.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
