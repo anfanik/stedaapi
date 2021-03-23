@@ -9,16 +9,16 @@ import me.anfanik.steda.api.wrapped.craft.WrappedCraftItemStack;
 import me.anfanik.steda.api.wrapped.nms.WrappedNbtTagCompound;
 import me.anfanik.steda.api.wrapped.nms.WrappedNmsItemStack;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -376,6 +376,31 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             }
             if (color != null) {
                 metaModifications.add(meta -> ((PotionMeta) meta).setColor(color));
+            }
+            return getThis();
+        }
+
+    }
+
+    public class BannerBuilder {
+
+        private final List<Pattern> patterns = new ArrayList<>();
+
+        public BannerBuilder addPattern(Pattern pattern) {
+            patterns.add(pattern);
+            return this;
+        }
+
+        public BannerBuilder addPattern(DyeColor color, PatternType type) {
+            return addPattern(new Pattern(color, type));
+        }
+
+        public B apply() {
+            if (!patterns.isEmpty()) {
+                metaModifications.add(meta -> {
+                    BannerMeta bannerMeta = (BannerMeta) meta;
+                    bannerMeta.setPatterns(patterns);
+                });
             }
             return getThis();
         }

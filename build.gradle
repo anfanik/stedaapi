@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.anfanik.steda'
-version '1.16.2-SNAPSHOT'
+version '1.16.3-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -46,7 +46,7 @@ publishing {
             mavenLocal()
         } else {
             maven {
-                url = 'https://repository.anfanik.me/c7x/'
+                url = 'https://repository.anfanik.me/private/'
                 credentials {
                     username System.getenv('A5K_USERNAME')
                     password System.getenv('A5K_PASSWORD')
