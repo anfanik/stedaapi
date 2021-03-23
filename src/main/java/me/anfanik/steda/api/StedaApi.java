@@ -19,7 +19,6 @@ public class StedaApi {
         PluginManager pluginManager = Bukkit.getPluginManager();
         new MenuService(plugin, pluginManager);
         new ChatInputService(plugin, pluginManager);
-        new SidebarService();
         new PingCommand();
     }
 

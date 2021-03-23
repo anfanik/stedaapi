@@ -18,11 +18,12 @@ import java.util.UUID;
 
 public class SidebarService implements Listener {
 
-    private static SidebarService instance; {
-        instance = this;
-    }
+    private static SidebarService instance;
 
     public static SidebarService get() {
+        if (instance == null) {
+            instance = new SidebarService();
+        }
         return instance;
     }
 
