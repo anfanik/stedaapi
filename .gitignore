@@ -1,3 +1,12 @@
+#IDEA
 .idea
-target
-dependency-reduced-pom.xml
+*.iml
+
+#Gradle
+.gradle
+build
+gradle.properties
+
+#macOS
+.DS_Store
+__MACOSX

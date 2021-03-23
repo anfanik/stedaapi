@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'me.anfanik.steda'
+version '1.16.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repository.anfanik.me/public/'
+    }
+    maven {
+        url 'https://repository.anfanik.me/private/'
+        credentials {
+            username System.getenv("A5K_USERNAME")
+            password System.getenv("A5K_PASSWORD")
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    compile 'me.anfanik:The_Seed:1.0'
+    compile 'me.anfanik:DatabaseAPI:1.0'
+
+    compileOnly files(fileTree('.library'))
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.processResources {
+    filter { it.replace('\$version', version as String) }
+}
+
+publishing {
+    repositories {
+        if (System.getenv('CI') == null) {
+            mavenLocal()
+        } else {
+            maven {
+                url = 'https://repository.anfanik.me/c7x/'
+                credentials {
+                    username System.getenv('A5K_USERNAME')
+                    password System.getenv('A5K_PASSWORD')
+                }
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+            artifact jar
+        }
+    }
+}

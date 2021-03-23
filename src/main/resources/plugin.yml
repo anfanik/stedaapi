@@ -1,4 +1,4 @@
 name: StedaApi
-version: ${version}
+version: $version
 author: Anfanik
 main: me.anfanik.steda.api.Bootstrap
