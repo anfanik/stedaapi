@@ -22,6 +22,7 @@ public interface WrappedCraftItemStack {
         switch (version) {
             case v1_8_R3: return new WrappedCraftItemStack_v1_8_R3();
             case v1_12_R1: return new WrappedCraftItemStack_v1_12_R1();
+            case v1_16_R3: return new WrappedCraftItemStack_v1_16_R3();
             default: return null;
         }
     }
@@ -92,6 +93,37 @@ public interface WrappedCraftItemStack {
         @Override
         public WrappedNmsItemStack asNmsCopy() {
             return ((WrappedNmsItemStack.WrappedNmsItemStack_v1_12_R1) WrappedNmsItemStack.get(MinecraftVersion.v1_12_R1)).generate(handle);
+        }
+
+    }
+
+    class WrappedCraftItemStack_v1_16_R3 implements WrappedCraftItemStack {
+
+        public WrappedCraftItemStack generate(ItemStack itemStack) {
+            return new WrappedCraftItemStack_v1_16_R3(
+                    org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asCraftCopy(itemStack)
+            );
+        }
+
+        public ItemStack asBukkitCopy(WrappedNmsItemStack nmsItemStack) {
+            return org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asBukkitCopy(
+                    ((WrappedNmsItemStack.WrappedNmsItemStack_v1_16_R3) nmsItemStack).getHandle()
+            );
+        }
+
+        private WrappedCraftItemStack_v1_16_R3() {
+        }
+
+        private WrappedCraftItemStack_v1_16_R3(org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack handle) {
+            this.handle = handle;
+        }
+
+        @Getter
+        private org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack handle;
+
+        @Override
+        public WrappedNmsItemStack asNmsCopy() {
+            return ((WrappedNmsItemStack.WrappedNmsItemStack_v1_16_R3) WrappedNmsItemStack.get(MinecraftVersion.v1_16_R3)).generate(handle);
         }
 
     }

@@ -2,6 +2,7 @@ package me.anfanik.steda.api.chat;
 
 import me.anfanik.steda.api.utility.cache.Cache;
 import me.anfanik.steda.api.utility.cache.HashCache;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,11 +29,14 @@ public class ChatInputService implements Listener {
         return instance;
     }
 
+    private final Plugin plugin;
+
     public ChatInputService(Plugin plugin, PluginManager pluginManager) {
+        this.plugin = plugin;
         pluginManager.registerEvents(this, plugin);
     }
 
-    private Cache<Player, BiConsumer<Player, String>> cache = new HashCache<>(1, TimeUnit.MINUTES);
+    private final Cache<Player, BiConsumer<Player, String>> cache = new HashCache<>(1, TimeUnit.MINUTES);
 
     public void addInputListener(Player player, BiConsumer<Player, String> messageConsumer) {
         cache.put(player, messageConsumer);
@@ -45,7 +49,7 @@ public class ChatInputService implements Listener {
             String message = event.getMessage();
             if (!message.equalsIgnoreCase("отмена") && !message.equalsIgnoreCase("cancel")) {
                 BiConsumer<Player, String> messageConsumer = cache.get(player);
-                messageConsumer.accept(player, message);
+                Bukkit.getScheduler().runTask(plugin, () -> messageConsumer.accept(player, message));
             }
             cache.remove(player);
             event.setCancelled(true);

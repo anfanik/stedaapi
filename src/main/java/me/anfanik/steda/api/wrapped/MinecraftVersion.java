@@ -11,18 +11,12 @@ import java.util.List;
  */
 
 public enum MinecraftVersion {
-    /*TODO Add versions support
-    v1_8_R1, v1_8_R2, v1_8_R3,
-    v1_12_R1
-    v1_9_R1, v1_9_R2,
-    v1_10_R1,
-    v1_11_R1,
-    v1_13_R1, v1_13_R2;*/
 
+    v1_16_R3,
     v1_12_R1,
     v1_8_R3;
 
-    private static final List<MinecraftVersion> PARTIALLY_SUPPORTED = Arrays.asList(v1_12_R1);
+    private static final List<MinecraftVersion> PARTIALLY_SUPPORTED = Arrays.asList();
 
     private static final MinecraftVersion CURRENT_VERSION;
 
@@ -37,7 +31,7 @@ public enum MinecraftVersion {
         CURRENT_VERSION = version;
         System.out.println("Current version: " + version);
         if (PARTIALLY_SUPPORTED.contains(version)) {
-            System.out.println("Version " + version + " not fully supported!");
+            System.out.println("Version " + version + " is not fully supported!");
         }
     }
 

@@ -68,11 +68,24 @@ public abstract class Command extends CommandBase {
         handle = new org.bukkit.command.Command(label, label + " command", "/" + label + " <arguments>", Arrays.asList(getAliases())) {
             @Override
             public boolean execute(CommandSender sender, String label, String[] arguments) {
-                Executor<?> executor;
-                if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
+                Executor<?> executor = null;
+                if (sender instanceof ConsoleCommandSender) {
                     executor = ConsoleExecutor.get(sender);
-                } else {
+                } else if (sender instanceof Player) {
                     executor = PlayerExecutor.get((Player) sender);
+                } else {
+                    try {
+                        Class.forName("org.bukkit.command.RemoteConsoleCommandSender");
+                        if (sender instanceof RemoteConsoleCommandSender) {
+                            executor = ConsoleExecutor.get(sender);
+                        }
+                    } catch (ClassNotFoundException ignored) {
+                    }
+                }
+
+                if (executor == null) {
+                    sender.sendMessage("Не удалось выполнить команду: unknown executor type.");
+                    return false;
                 }
 
                 try {
