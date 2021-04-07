@@ -124,11 +124,6 @@ public class SidebarImpl implements Sidebar {
         this.titleGenerator = titleGenerator;
         scoreboards.forEach((player, scoreboard) -> {
             Objective objective = scoreboard.getObjective(name);
-            System.out.println("SCOREBOARD:" + scoreboard);
-            System.out.println("OBJCTVS:" + scoreboard.getObjectives());
-            System.out.println("TITLE FOR PLAYER: " + player);
-            System.out.println("SETTING TITLE: " + titleGenerator.apply(player));
-            System.out.println("OBJ: " + objective);
             objective.setDisplayName(titleGenerator.apply(player));
         });
     }

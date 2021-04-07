@@ -27,15 +27,14 @@ public class SidebarService implements Listener {
         return instance;
     }
 
+    private static final Scoreboard EMPTY_SCOREBOARD = Bukkit.getScoreboardManager().getNewScoreboard();
 
-    private Map<UUID, Sidebar> sidebars = new HashMap<>();
+    private final Map<UUID, Sidebar> sidebars = new HashMap<>();
 
     public void show(Player player, Sidebar sidebar) {
         sidebar.show(player);
         sidebars.put(player.getUniqueId(), sidebar);
     }
-
-    private static Scoreboard EMPTY_SCOREBOARD = Bukkit.getScoreboardManager().getNewScoreboard();
 
     public void hide(Player player) {
         UUID uuid = player.getUniqueId();
@@ -49,10 +48,7 @@ public class SidebarService implements Listener {
     @EventHandler
     public void handleQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        Sidebar sidebar = sidebars.remove(player.getUniqueId());
-        if (sidebar != null) {
-            sidebar.hide(player);
-        }
+        hide(player);
     }
 
 }
