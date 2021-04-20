@@ -27,7 +27,7 @@ public class SidebarService implements Listener {
         return instance;
     }
 
-    private static final Scoreboard EMPTY_SCOREBOARD = Bukkit.getScoreboardManager().getNewScoreboard();
+    private static final Scoreboard EMPTY_SCOREBOARD = Bukkit.getScoreboardManager().getMainScoreboard();
 
     private final Map<UUID, Sidebar> sidebars = new HashMap<>();
 

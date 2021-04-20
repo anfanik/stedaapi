@@ -12,13 +12,9 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-
-/**
- * @author Anfanik
- * Date: 10/12/2019
- */
 
 public class SidebarImpl implements Sidebar {
 
@@ -28,23 +24,19 @@ public class SidebarImpl implements Sidebar {
     @Getter
     private Function<Player, String> titleGenerator = player -> "";
 
-    private final Map<Player, Scoreboard> scoreboards = new ConcurrentHashMap<>();
+    private final Map<UUID, Scoreboard> scoreboards = new ConcurrentHashMap<>();
 
     @Getter
-    private Row[] rows;
+    private final Row[] rows;
 
     public SidebarImpl(String name, Row[] rows) {
         this.name = name;
         this.rows = rows;
-        for (int index = 0; index < rows.length; index++) {
-            Row row = rows[index];
+        for (Row row : rows) {
             row.addUpdateCallback((player, text) -> {
-                Scoreboard scoreboard = scoreboards.get(player);
+                Scoreboard scoreboard = scoreboards.get(player.getUniqueId());
                 Team team = scoreboard.getTeam(String.format("%s.%s", name, row.getId()));
                 team.setPrefix(text);
-                //String[] parts = splitText(text);
-                //team.setPrefix(parts[0]);
-                //team.setPrefix(parts[1]);
             });
         }
     }
@@ -99,15 +91,15 @@ public class SidebarImpl implements Sidebar {
     }
 
     private Scoreboard getScoreboard(Player player) {
-        if (scoreboards.containsKey(player)) {
-            return scoreboards.get(player);
+        if (scoreboards.containsKey(player.getUniqueId())) {
+            return scoreboards.get(player.getUniqueId());
         }
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective(name, "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(TextUtility.colorize(titleGenerator.apply(player)));
-        scoreboards.put(player, scoreboard);
+        scoreboards.put(player.getUniqueId(), scoreboard);
 
         for (int index = 0; index < rows.length; index++) {
             Row row = rows[index];
@@ -122,8 +114,9 @@ public class SidebarImpl implements Sidebar {
 
     public void setTitle(Function<Player, String> titleGenerator) {
         this.titleGenerator = titleGenerator;
-        scoreboards.forEach((player, scoreboard) -> {
+        scoreboards.forEach((uuid, scoreboard) -> {
             Objective objective = scoreboard.getObjective(name);
+            Player player = Bukkit.getPlayer(uuid);
             objective.setDisplayName(titleGenerator.apply(player));
         });
     }
@@ -135,7 +128,7 @@ public class SidebarImpl implements Sidebar {
 
     @Override
     public void hide(Player player) {
-        scoreboards.remove(player);
+        scoreboards.remove(player.getUniqueId());
     }
 
 }
