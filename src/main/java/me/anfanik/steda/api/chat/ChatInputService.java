@@ -15,11 +15,6 @@ import org.bukkit.plugin.PluginManager;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-/**
- * @author Anfanik
- * Date: 06/10/2019
- */
-
 public class ChatInputService implements Listener {
 
     private static ChatInputService instance; {

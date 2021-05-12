@@ -3,11 +3,6 @@ package me.anfanik.steda.api.wrapped.nms;
 import lombok.*;
 import me.anfanik.steda.api.wrapped.MinecraftVersion;
 
-/**
- * @author Anfanik
- * Date: 21/09/2019
- */
-
 public interface WrappedNbtTagCompound {
 
     static WrappedNbtTagCompound get() {

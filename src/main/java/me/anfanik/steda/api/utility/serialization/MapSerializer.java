@@ -6,11 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 12/12/2019
- */
-
 @RequiredArgsConstructor
 public class MapSerializer<K, V> {
 

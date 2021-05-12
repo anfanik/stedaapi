@@ -17,11 +17,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 public class MenuService implements Listener {
 
     private static MenuService instance;

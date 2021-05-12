@@ -8,11 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 24/10/2019
- */
-
 @RequiredArgsConstructor
 public class HashCache<K, V> implements Cache<K, V> {
 

@@ -6,11 +6,6 @@ import me.anfanik.steda.api.menu.button.MenuButton;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Anfanik
- * Date: 19/09/2019
- */
-
 public interface FillingStrategy<S extends MenuSession> {
 
     Map<Integer, MenuButton> generate(S session);

@@ -9,11 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConsoleExecutor implements Executor<CommandSender> {
 

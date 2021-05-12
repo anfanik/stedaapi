@@ -10,11 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 public class TextUtility {
 
     public static String colorize(String message, Object... arguments) {

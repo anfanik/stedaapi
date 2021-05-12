@@ -10,11 +10,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * @author Anfanik
- * Date: 19/09/2019
- */
-
 @RequiredArgsConstructor
 public class PatternFillingStrategy<S extends MenuSession> implements FillingStrategy<S> {
 

@@ -5,11 +5,6 @@ import org.bukkit.Bukkit;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Anfanik
- * Date: 21/09/2019
- */
-
 public enum MinecraftVersion {
 
     v1_16_R3,

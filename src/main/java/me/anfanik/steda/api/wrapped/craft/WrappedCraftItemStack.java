@@ -7,11 +7,6 @@ import me.anfanik.steda.api.wrapped.MinecraftVersion;
 import me.anfanik.steda.api.wrapped.nms.WrappedNmsItemStack;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * @author Anfanik
- * Date: 21/09/2019
- */
-
 public interface WrappedCraftItemStack {
 
     static WrappedCraftItemStack get() {

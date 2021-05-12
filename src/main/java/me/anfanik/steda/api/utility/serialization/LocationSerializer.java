@@ -7,11 +7,6 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Anfanik
- * Date: 20/11/2019
- */
-
 public class LocationSerializer {
 
     public static String serialize(Location location) {

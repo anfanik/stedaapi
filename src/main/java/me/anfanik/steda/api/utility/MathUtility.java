@@ -4,11 +4,6 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * @author Anfanik
- * Date: 21/12/2019
- */
-
 public class MathUtility {
 
     public static float randomInRange(float min, float max) {

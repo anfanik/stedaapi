@@ -10,11 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-/**
- * @author Anfanik
- * Date: 17/09/2019
- */
-
 public class StedaApi {
 
     static void initialize(Plugin plugin) {

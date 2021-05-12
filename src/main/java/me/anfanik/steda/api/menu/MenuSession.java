@@ -11,11 +11,6 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Anfanik
- * Date: 19/09/2019
- */
-
 @Data
 public class MenuSession implements InventoryHolder {
 

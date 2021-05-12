@@ -11,11 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Anfanik
- * Date: 20/09/2019
- */
-
 @AllArgsConstructor
 public class MenuButton {
 

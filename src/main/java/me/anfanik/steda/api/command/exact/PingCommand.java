@@ -6,11 +6,6 @@ import me.anfanik.steda.api.command.SubcommandHandler;
 import me.anfanik.steda.api.command.executor.Executor;
 import me.anfanik.steda.api.command.executor.PlayerExecutor;
 
-/**
- * @author Anfanik
- * Date: 05/01/2020
- */
-
 public class PingCommand extends Command {
 
     public PingCommand() {

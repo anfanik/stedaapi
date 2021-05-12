@@ -11,11 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * @author Anfanik
- * Date: 11/12/2019
- */
-
 public class SidebarService implements Listener {
 
     private static SidebarService instance;

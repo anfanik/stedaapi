@@ -8,11 +8,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayerExecutor implements Executor<Player> {
 

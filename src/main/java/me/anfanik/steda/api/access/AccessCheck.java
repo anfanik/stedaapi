@@ -2,11 +2,6 @@ package me.anfanik.steda.api.access;
 
 import java.util.function.Predicate;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 @FunctionalInterface
 public interface AccessCheck<T> {
 

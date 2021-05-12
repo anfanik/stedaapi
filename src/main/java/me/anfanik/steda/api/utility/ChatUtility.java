@@ -11,11 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 public class ChatUtility {
 
     public static ChatUtility getPrefixed(String prefix) {

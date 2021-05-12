@@ -2,11 +2,6 @@ package me.anfanik.steda.api.utility.cache;
 
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 24/10/2019
- */
-
 public interface Cache<K, V> {
 
     V get(K key);

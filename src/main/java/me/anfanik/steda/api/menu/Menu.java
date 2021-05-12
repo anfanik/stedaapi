@@ -20,11 +20,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 18/09/2019
- */
-
 public class Menu<S extends MenuSession> {
 
     private final InventoryType inventoryType;

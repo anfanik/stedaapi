@@ -4,11 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.Data;
 
-/**
- * @author Anfanik
- * Date: 29/11/2019
- */
-
 @Data
 public class Skin {
 

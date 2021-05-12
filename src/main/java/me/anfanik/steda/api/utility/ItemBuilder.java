@@ -29,11 +29,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * @author Anfanik
- * Date: 20/09/2019
- */
-
 public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     public static MaterialItemBuilder fromMaterial(Material material) {
