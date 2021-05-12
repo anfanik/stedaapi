@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -54,6 +55,11 @@ public class ChatInputService implements Listener {
             cache.remove(player);
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void handleQuit(PlayerQuitEvent event) {
+        cache.remove(event.getPlayer());
     }
 
 }
