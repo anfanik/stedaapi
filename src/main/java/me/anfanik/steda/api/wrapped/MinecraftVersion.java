@@ -7,9 +7,13 @@ import java.util.List;
 
 public enum MinecraftVersion {
 
-    v1_16_R3,
+    v1_8_R3,
     v1_12_R1,
-    v1_8_R3;
+    v1_13_R1,
+    v1_13_R2,
+    v1_16_R1,
+    v1_16_R2,
+    v1_16_R3;
 
     private static final List<MinecraftVersion> PARTIALLY_SUPPORTED = Arrays.asList();
 
