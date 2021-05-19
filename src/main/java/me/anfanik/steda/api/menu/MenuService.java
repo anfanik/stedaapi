@@ -30,30 +30,6 @@ public class MenuService implements Listener {
         pluginManager.registerEvents(this, plugin);
     }
 
-    public Menu<MenuSession> confirmationMenu(ClickCallback<?> confirmationCallback) {
-        return confirmationMenu(confirmationCallback, (ignored1, ignored2, ignored3) -> {});
-    }
-
-    public Menu<MenuSession> confirmationMenu(ClickCallback<?> confirmationCallback, ClickCallback<?> cancelCallback) {
-        Menu<MenuSession> menu = new Menu<>(54);
-        menu.setTitleGenerator(session -> "Подтверждение");
-        menu.setFillingStrategy(session -> {
-            ClickCallback<?> baseCallback = (player, clickType, slot) -> player.closeInventory();
-            ItemStack confirmationItem = ItemBuilder.fromMaterial(Material.STAINED_GLASS_PANE, 5)
-                    .setName("&aПодтвердить")
-                    .build();
-            ItemStack cancelItem = ItemBuilder.fromMaterial(Material.STAINED_GLASS_PANE, 14)
-                    .setName("&cОтменить")
-                    .build();
-
-            return new FillingStrategy.ResultBuilder()
-                    .addButton(new MenuButton(confirmationItem, baseCallback, confirmationCallback), 11, 12, 20, 21)
-                    .addButton(new MenuButton(cancelItem, baseCallback, cancelCallback), 32, 33, 41, 42)
-                    .build();
-        });
-        return menu;
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void handleClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
