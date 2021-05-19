@@ -26,7 +26,7 @@ dependencies {
 
     compile 'me.anfanik:The_Seed:1.0'
     compile 'me.anfanik:DatabaseAPI:1.0'
-    compile 'me.anfanik:sharkly:1.0'
+    compileOnly 'me.anfanik:sharkly:1.0'
 
     compileOnly files(fileTree('.library'))
 }
