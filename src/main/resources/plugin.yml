@@ -1,5 +1,5 @@
 name: StedaApi
 version: $version
-author: Anfanik
+author: anfanik
 main: me.anfanik.steda.api.Bootstrap
 softdepend: [Sharkly]
