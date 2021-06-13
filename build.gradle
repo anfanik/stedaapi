@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.anfanik.steda'
-version '1.18'
+version '1.19.1'
 
 repositories {
     mavenCentral()
@@ -28,7 +28,15 @@ dependencies {
     compile 'me.anfanik:DatabaseAPI:1.0'
     compileOnly 'me.anfanik:sharkly:1.0'
 
-    compileOnly files(fileTree('.library'))
+    compileOnly files(
+            '.library/spigot-1.12-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.8.8-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.13-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.13.1-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.16.1-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.16.2-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.16.4-R0.1-SNAPSHOT.jar'
+    )
 }
 
 jar {
@@ -61,6 +69,6 @@ publishing {
             artifactId project.name
             version project.version
             artifact jar
-        }
+        }\
     }
 }

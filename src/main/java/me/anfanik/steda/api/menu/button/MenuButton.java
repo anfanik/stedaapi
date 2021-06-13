@@ -12,10 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 
 @AllArgsConstructor
+@Deprecated
+@Getter
+@Setter
 public class MenuButton {
 
-    @Getter
-    @Setter
     private ItemStack itemStack;
     private final List<ClickCallback> callbacks;
 

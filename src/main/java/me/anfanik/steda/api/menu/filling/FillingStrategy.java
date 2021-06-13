@@ -6,6 +6,7 @@ import me.anfanik.steda.api.menu.button.MenuButton;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public interface FillingStrategy<S extends MenuSession> {
 
     Map<Integer, MenuButton> generate(S session);

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 @FunctionalInterface
+@Deprecated
 public interface ClickCallback<S extends MenuSession> {
 
     void process(Player player, ClickType clickType, int slot);

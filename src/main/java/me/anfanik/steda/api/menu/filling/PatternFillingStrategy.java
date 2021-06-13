@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
+@Deprecated
 public class PatternFillingStrategy<S extends MenuSession> implements FillingStrategy<S> {
 
     private final String[] matrix;
