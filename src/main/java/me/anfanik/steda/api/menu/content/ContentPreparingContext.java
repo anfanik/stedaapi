@@ -40,11 +40,13 @@ public class ContentPreparingContext {
         latestContent = new HashMap<>();
         items.forEach((slot, items) -> {
             for (MenuItem item : items) {
-                val icon = item.getIcon(session);
-                if (icon != null) {
-                    inventory.setItem(slot, icon);
-                    latestContent.put(slot, item);
-                    break;
+                if (item != null){
+                    val icon = item.getIcon(session);
+                    if (icon != null) {
+                        inventory.setItem(slot, icon);
+                        latestContent.put(slot, item);
+                        break;
+                    }
                 }
             }
         });
