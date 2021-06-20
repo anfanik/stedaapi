@@ -20,16 +20,18 @@ import java.util.function.Supplier;
 public class PatternContentProvider<S extends MenuSession> implements ContentProvider<S> {
 
     private final String[] matrix;
-    private final Map<Character, Function<S, MenuItem>> content;
+    private final Map<Character, PatternContent<S>> content;
 
     @Override
     public void provide(S session, ContentPreparingContext context) {
+        content.values().forEach(PatternContent::resetState);
+
         int slot = 0;
         for (String line : matrix) {
             for (char symbol : line.toCharArray()) {
                 if (content.containsKey(symbol)) {
-                    Function<S, MenuItem> itemFunction = content.get(symbol);
-                    context.addItem(slot, itemFunction.apply(session));
+                    PatternContent<S> symbolContent = content.get(symbol);
+                    context.addItem(slot, symbolContent.get(session));
                 }
                 slot++;
             }
@@ -47,7 +49,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
     public static class Builder<S extends MenuSession> {
 
         private String[] matrix;
-        private final Map<Character, Function<S, MenuItem>> content = new HashMap<>();
+        private final Map<Character, PatternContent<S>> content = new HashMap<>();
 
         public Builder<S> matrix(String... matrix) {
             this.matrix = matrix;
@@ -55,41 +57,27 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         public Builder<S> item(char symbol, MenuItem item) {
-            content.put(symbol, session -> item);
+            content.put(symbol, new StaticPatternContent<>(item));
             return this;
         }
 
-        public Builder<S> item(char symbol, Supplier<MenuItem> itemSupplier) {
-            content.put(symbol, session -> itemSupplier.get());
+        public Builder<S> item(char symbol, Supplier<MenuItem> supplier) {
+            content.put(symbol, new SupplierPatternContent<>(supplier));
             return this;
         }
 
-        public Builder<S> item(char symbol, Function<S, MenuItem> itemFunction) {
-            content.put(symbol, itemFunction);
+        public Builder<S> item(char symbol, Function<S, MenuItem> function) {
+            content.put(symbol, new FunctionPatternContent<>(function));
             return this;
-        }
-
-        public Builder<S> items(char symbol, Iterator<MenuItem> items, MenuItem defaultItem) {
-            content.put(symbol, session -> {
-                if (items.hasNext()) {
-                    return items.next();
-                } else {
-                    return defaultItem;
-                }
-            });
-            return this;
-        }
-
-        public Builder<S> items(char symbol, Iterator<MenuItem> items) {
-            return items(symbol, items, null);
         }
 
         public Builder<S> items(char symbol, Iterable<MenuItem> items, MenuItem defaultItem) {
-            return items(symbol, items.iterator(), defaultItem);
+            content.put(symbol, new IterablePatternContent<>(items, defaultItem));
+            return this;
         }
 
         public Builder<S> items(char symbol, Iterable<MenuItem> items) {
-            return items(symbol, items.iterator(), null);
+            return items(symbol, items, null);
         }
 
         public Builder<S> staticItem(char symbol, ItemStack icon, MenuClickHandler<?>... clickHandlers) {
@@ -103,6 +91,99 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         public PatternContentProvider<S> build() {
             Preconditions.checkNotNull(matrix, "matrix is not set");
             return new PatternContentProvider<>(matrix, content);
+        }
+
+    }
+
+    private interface PatternContent<S extends MenuSession> {
+
+        MenuItem get(S session);
+
+        void resetState();
+
+    }
+
+    @RequiredArgsConstructor
+    private static class StaticPatternContent<S extends MenuSession> implements PatternContent<S> {
+
+        private final MenuItem item;
+
+        @Override
+        public MenuItem get(S session) {
+            return item;
+        }
+
+        @Override
+        public void resetState() {
+        }
+
+    }
+
+    private static class IterablePatternContent<S extends MenuSession> implements PatternContent<S> {
+
+        private final Iterable<MenuItem> iterable;
+        private final MenuItem defaultItem;
+
+        private Iterator<MenuItem> iterator;
+
+        private IterablePatternContent(Iterable<MenuItem> iterable, MenuItem defaultItem) {
+            this.iterable = iterable;
+            this.defaultItem = defaultItem;
+        }
+
+
+        @Override
+        public MenuItem get(S session) {
+            if (iterator.hasNext()) {
+                return iterator.next();
+            } else {
+                return defaultItem;
+            }
+        }
+
+        @Override
+        public void resetState() {
+            iterator = iterable.iterator();
+        }
+
+    }
+
+    private static class FunctionPatternContent<S extends MenuSession> implements PatternContent<S> {
+
+        private final Function<S, MenuItem> function;
+
+        private FunctionPatternContent(Function<S, MenuItem> function) {
+            this.function = function;
+        }
+
+
+        @Override
+        public MenuItem get(S session) {
+            return function.apply(session);
+        }
+
+        @Override
+        public void resetState() {
+        }
+
+    }
+
+    private static class SupplierPatternContent<S extends MenuSession> implements PatternContent<S> {
+
+        private final Supplier<MenuItem> supplier;
+
+        private SupplierPatternContent(Supplier<MenuItem> supplier) {
+            this.supplier = supplier;
+        }
+
+
+        @Override
+        public MenuItem get(S session) {
+            return supplier.get();
+        }
+
+        @Override
+        public void resetState() {
         }
 
     }
