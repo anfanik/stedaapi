@@ -72,7 +72,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         public Builder<S> items(char symbol, Iterable<MenuItem> items, MenuItem defaultItem) {
-            content.put(symbol, new IterablePatternContent<>(items, defaultItem));
+            content.put(symbol, new IteratorPatternContent<>(ignored -> items.iterator(), defaultItem));
             return this;
         }
 
@@ -80,12 +80,30 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
             return items(symbol, items, null);
         }
 
+        public Builder<S> items(char symbol, Function<S, Iterator<MenuItem>> items, MenuItem defaultItem) {
+            content.put(symbol, new IteratorPatternContent<>(items, defaultItem));
+            return this;
+        }
+
+        public Builder<S> items(char symbol, Function<S, Iterator<MenuItem>> items) {
+            return items(symbol, items, null);
+        }
+
         public Builder<S> paginatedItems(char symbol, Iterable<MenuItem> items, int perPage, MenuItem defaultItem) {
-            content.put(symbol, new PaginatedIterablePatternContent<>(items, perPage, defaultItem));
+            content.put(symbol, new PaginatedIteratorPatternContent<>(ignored -> items.iterator(), perPage, defaultItem));
             return this;
         }
 
         public Builder<S> paginatedItems(char symbol, Iterable<MenuItem> items, int perPage) {
+            return paginatedItems(symbol, items, perPage, null);
+        }
+
+        public Builder<S> paginatedItems(char symbol, Function<S, Iterator<MenuItem>> items, int perPage, MenuItem defaultItem) {
+            content.put(symbol, new PaginatedIteratorPatternContent<>(items, perPage, defaultItem));
+            return this;
+        }
+
+        public Builder<S> paginatedItems(char symbol, Function<S, Iterator<MenuItem>> items, int perPage) {
             return paginatedItems(symbol, items, perPage, null);
         }
 
@@ -128,15 +146,15 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
 
     }
 
-    private static class IterablePatternContent<S extends MenuSession> implements PatternContent<S> {
+    private static class IteratorPatternContent<S extends MenuSession> implements PatternContent<S> {
 
-        private final Iterable<MenuItem> iterable;
+        private final Function<S, Iterator<MenuItem>> iteratorProvider;
         private final MenuItem defaultItem;
 
         private Iterator<MenuItem> iterator;
 
-        private IterablePatternContent(Iterable<MenuItem> iterable, MenuItem defaultItem) {
-            this.iterable = iterable;
+        private IteratorPatternContent(Function<S, Iterator<MenuItem>> iteratorProvider, MenuItem defaultItem) {
+            this.iteratorProvider = iteratorProvider;
             this.defaultItem = defaultItem;
         }
 
@@ -152,21 +170,21 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
 
         @Override
         public void resetState(S session) {
-            iterator = iterable.iterator();
+            iterator = iteratorProvider.apply(session);
         }
 
     }
 
-    private static class PaginatedIterablePatternContent<S extends MenuSession> implements PatternContent<S> {
+    private static class PaginatedIteratorPatternContent<S extends MenuSession> implements PatternContent<S> {
 
-        private final Iterable<MenuItem> iterable;
+        private final Function<S, Iterator<MenuItem>> iteratorProvider;
         private final int perPage;
         private final MenuItem defaultItem;
 
         private Iterator<MenuItem> iterator;
 
-        private PaginatedIterablePatternContent(Iterable<MenuItem> iterable, int perPage, MenuItem defaultItem) {
-            this.iterable = iterable;
+        private PaginatedIteratorPatternContent(Function<S, Iterator<MenuItem>> iteratorProvider, int perPage, MenuItem defaultItem) {
+            this.iteratorProvider = iteratorProvider;
             this.perPage = perPage;
             this.defaultItem = defaultItem;
         }
@@ -183,7 +201,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
 
         @Override
         public void resetState(S session) {
-            iterator = iterable.iterator();
+            iterator = iteratorProvider.apply(session);
             for (int i = 0; i < perPage * session.getPage(); i++) {
                 if (iterator.hasNext()) {
                     iterator.next();
