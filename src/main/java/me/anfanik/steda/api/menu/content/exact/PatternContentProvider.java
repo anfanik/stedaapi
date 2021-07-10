@@ -24,7 +24,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
 
     @Override
     public void provide(S session, ContentPreparingContext context) {
-        content.values().forEach(PatternContent::resetState);
+        content.values().forEach(content -> content.resetState(session));
 
         int slot = 0;
         for (String line : matrix) {
@@ -80,6 +80,15 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
             return items(symbol, items, null);
         }
 
+        public Builder<S> paginatedItems(char symbol, Iterable<MenuItem> items, int perPage, MenuItem defaultItem) {
+            content.put(symbol, new PaginatedIterablePatternContent<>(items, perPage, defaultItem));
+            return this;
+        }
+
+        public Builder<S> paginatedItems(char symbol, Iterable<MenuItem> items, int perPage) {
+            return paginatedItems(symbol, items, perPage, null);
+        }
+
         public Builder<S> staticItem(char symbol, ItemStack icon, MenuClickHandler<?>... clickHandlers) {
             return item(symbol, MenuItem.createStatic(icon, clickHandlers));
         }
@@ -99,7 +108,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
 
         MenuItem get(S session);
 
-        void resetState();
+        void resetState(S session);
 
     }
 
@@ -114,7 +123,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         @Override
-        public void resetState() {
+        public void resetState(S session) {
         }
 
     }
@@ -142,8 +151,46 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         @Override
-        public void resetState() {
+        public void resetState(S session) {
             iterator = iterable.iterator();
+        }
+
+    }
+
+    private static class PaginatedIterablePatternContent<S extends MenuSession> implements PatternContent<S> {
+
+        private final Iterable<MenuItem> iterable;
+        private final int perPage;
+        private final MenuItem defaultItem;
+
+        private Iterator<MenuItem> iterator;
+
+        private PaginatedIterablePatternContent(Iterable<MenuItem> iterable, int perPage, MenuItem defaultItem) {
+            this.iterable = iterable;
+            this.perPage = perPage;
+            this.defaultItem = defaultItem;
+        }
+
+
+        @Override
+        public MenuItem get(S session) {
+            if (iterator.hasNext()) {
+                return iterator.next();
+            } else {
+                return defaultItem;
+            }
+        }
+
+        @Override
+        public void resetState(S session) {
+            iterator = iterable.iterator();
+            for (int i = 0; i < perPage * session.getPage(); i++) {
+                if (iterator.hasNext()) {
+                    iterator.next();
+                } else {
+                    break;
+                }
+            }
         }
 
     }
@@ -163,7 +210,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         @Override
-        public void resetState() {
+        public void resetState(S session) {
         }
 
     }
@@ -183,7 +230,7 @@ public class PatternContentProvider<S extends MenuSession> implements ContentPro
         }
 
         @Override
-        public void resetState() {
+        public void resetState(S session) {
         }
 
     }
