@@ -18,7 +18,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,20 +46,19 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     private List<Function<ItemStack, ItemStack>> itemChangers = new ArrayList<>();
     private List<Consumer<ItemStack>> itemModifications = new ArrayList<>();
-    private List<Consumer<ItemMeta>> metaModifications = new ArrayList<>();
 
     public B setName(String name) {
-        metaModifications.add(meta -> meta.setDisplayName(TextUtility.colorize("&f" + name)));
+        itemModifications.add(meta -> meta.setDisplayName(TextUtility.colorize("&f" + name)));
         return getThis();
     }
 
     public B setNameUncolored(String name) {
-        metaModifications.add((meta) -> meta.setDisplayName(name));
+        itemModifications.add((meta) -> meta.setDisplayName(name));
         return getThis();
     }
 
     public B setLore(Collection<String> lore) {
-        metaModifications.add(meta -> meta.setLore(new ArrayList<>(TextUtility.colorize(lore))));
+        itemModifications.add(meta -> meta.setLore(new ArrayList<>(TextUtility.colorize(lore))));
         return getThis();
     }
 
@@ -67,35 +67,35 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     }
 
     public B appendLore(String... lines) {
-        metaModifications.add(meta -> {
-            List<String> lore = getLore(meta);
+        itemModifications.add(itemStack -> {
+            List<String> lore = new ArrayList<>(itemStack.getLore());
             lore.addAll(Arrays.asList(lines));
-            meta.setLore(TextUtility.colorize(lore));
+            itemStack.setLore(TextUtility.colorize(lore));
         });
         return getThis();
     }
 
     public B formatLore(Function<List<String>, List<String>> formatter) {
-        metaModifications.add(meta -> {
-            List<String> lore = getLore(meta);
-            meta.setLore(TextUtility.colorize(formatter.apply(lore)));
+        itemModifications.add(itemStack -> {
+            List<String> lore = itemStack.getLore();
+            itemStack.setLore(TextUtility.colorize(formatter.apply(lore)));
         });
         return getThis();
     }
 
     public B formatLoreLines(Function<String, String> formatter) {
-        metaModifications.add(meta -> {
+        itemModifications.add(itemStack -> {
             List<String> lore = new ArrayList<>();
-            getLore(meta).forEach(line -> lore.add(formatter.apply(line)));
-            meta.setLore(TextUtility.colorize(lore));
+            itemStack.getLore().forEach(line -> lore.add(formatter.apply(line)));
+            itemStack.setLore(TextUtility.colorize(lore));
         });
         return getThis();
     }
 
-    private List<String> getLore(ItemMeta meta) {
-        List<String> lore = meta.getLore();
-        return lore == null ? new ArrayList<>() : lore;
-    }
+//    private List<String> getLore(ItemMeta meta) {
+//        List<String> lore = meta.getLore();
+//        return lore == null ? new ArrayList<>() : lore;
+//    }
 
     public B setAmount(int amount) {
         itemModifications.add(item -> item.setAmount(amount));
@@ -112,17 +112,17 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     }
 
     public B setUnbreakable(boolean unbreakable) {
-        metaModifications.add(meta -> meta.spigot().setUnbreakable(unbreakable));
+        itemModifications.add(meta -> meta.setUnbreakable(unbreakable));
         return getThis();
     }
 
     public B addItemFlag(ItemFlag itemFlag) {
-        metaModifications.add(meta -> meta.addItemFlags(itemFlag));
+        itemModifications.add(meta -> meta.addItemFlags(itemFlag));
         return getThis();
     }
 
     public B addEnchantment(Enchantment enchantment, int level) {
-        metaModifications.add(meta -> meta.addEnchant(enchantment, level, true));
+        itemModifications.add(meta -> meta.addEnchantment(enchantment, level));
         return getThis();
     }
 
@@ -130,11 +130,11 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         return new NbtBuilder();
     }
 
-    public SkullBuilder skullBuilder() {
+    /*public SkullBuilder skullBuilder() {
         return new SkullBuilder();
-    }
+    }*/
 
-    public LeatherArmorBuilder leatherArmorBuilder() {
+    /*    public LeatherArmorBuilder leatherArmorBuilder() {
         return new LeatherArmorBuilder();
     }
 
@@ -144,7 +144,7 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     public BannerBuilder bannerBuilder() {
         return new BannerBuilder();
-    }
+    }*/
 
     @SuppressWarnings("unchecked")
     B getThis() {
@@ -162,9 +162,6 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         ItemStack item = temporaryItem;
         itemModifications.forEach(modification -> modification.accept(item));
 
-        ItemMeta meta = item.getItemMeta();
-        metaModifications.forEach(modification -> modification.accept(meta));
-        item.setItemMeta(meta);
         return item;
     }
 
@@ -229,7 +226,7 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     }
 
-    public class SkullBuilder {
+    /*public class SkullBuilder {
 
         private boolean cristalix = false;
 
@@ -280,6 +277,7 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             }
 
             if (owner != null) {
+//                itemModifications.add(meta -.)
                 metaModifications.add(meta -> ((SkullMeta) meta).setOwner(owner));
             }
 
@@ -322,9 +320,9 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             return getThis();
         }
 
-    }
+    }*/
 
-    public class LeatherArmorBuilder {
+    /*public class LeatherArmorBuilder {
 
         private Color color;
 
@@ -343,9 +341,9 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             return getThis();
         }
 
-    }
+    }*/
 
-    public class PotionBuilder {
+    /*    public class PotionBuilder {
 
         private PotionEffectType mainEffectType;
         private List<PotionEffect> effects = new ArrayList<>();
@@ -404,6 +402,6 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             return getThis();
         }
 
-    }
+    }*/
 
 }

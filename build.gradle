@@ -29,19 +29,28 @@ dependencies {
     compileOnly 'me.anfanik:sharkly:1.0'
 
     compileOnly files(
+            '.library/dark-paper.jar',
             '.library/spigot-1.12-R0.1-SNAPSHOT.jar',
             '.library/spigot-1.8.8-R0.1-SNAPSHOT.jar',
             '.library/spigot-1.13-R0.1-SNAPSHOT.jar',
             '.library/spigot-1.13.1-R0.1-SNAPSHOT.jar',
             '.library/spigot-1.16.1-R0.1-SNAPSHOT.jar',
             '.library/spigot-1.16.2-R0.1-SNAPSHOT.jar',
-            '.library/spigot-1.16.4-R0.1-SNAPSHOT.jar'
+            '.library/spigot-1.16.2-R0.1-SNAPSHOT.jar',
+            '.library/spigot-1.16.4-R0.1-SNAPSHOT.jar',
     )
 }
 
 jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.with {
+    withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-Xlint:none'
     }
 }
 
