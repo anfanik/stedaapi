@@ -1,31 +1,16 @@
 package me.anfanik.steda.api.utility;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.anfanik.steda.api.wrapped.craft.WrappedCraftItemStack;
 import me.anfanik.steda.api.wrapped.nms.WrappedNbtTagCompound;
 import me.anfanik.steda.api.wrapped.nms.WrappedNmsItemStack;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
-import org.bukkit.block.banner.Pattern;
-import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -44,8 +29,8 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         return new ItemStackItemBuilder(itemStack);
     }
 
-    private List<Function<ItemStack, ItemStack>> itemChangers = new ArrayList<>();
-    private List<Consumer<ItemStack>> itemModifications = new ArrayList<>();
+    private final List<Function<ItemStack, ItemStack>> itemChangers = new ArrayList<>();
+    private final List<Consumer<ItemStack>> itemModifications = new ArrayList<>();
 
     public B setName(String name) {
         itemModifications.add(meta -> meta.setDisplayName(TextUtility.colorize("&f" + name)));
@@ -137,11 +122,9 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     /*    public LeatherArmorBuilder leatherArmorBuilder() {
         return new LeatherArmorBuilder();
     }
-
     public PotionBuilder potionBuilder() {
         return new PotionBuilder();
     }
-
     public BannerBuilder bannerBuilder() {
         return new BannerBuilder();
     }*/
@@ -227,60 +210,47 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     }
 
     /*public class SkullBuilder {
-
         private boolean cristalix = false;
-
         private String owner;
         private String texture;
         private Skin skin;
-
         private SkullType type;
-
         public SkullBuilder cristalix() {
             cristalix = true;
             return this;
         }
-
         public SkullBuilder setType(SkullType type) {
             this.type = type;
             return this;
         }
-
         public SkullBuilder setOwner(Player owner) {
             this.owner = owner.getName();
             return this;
         }
-
         public SkullBuilder setOwner(String owner) {
             this.owner = owner;
             return this;
         }
-
         @Deprecated
         public SkullBuilder setTexture(String texture) {
             this.texture = texture;
             return this;
         }
-
         public SkullBuilder setSkin(Skin skin) {
             this.skin = skin;
             return this;
         }
-
         public SkullBuilder setSkin(String texture, String signature) {
             return setSkin(new Skin(texture, signature));
         }
-
         public B apply() {
             if (type != null) {
                 setDurability(type.ordinal());
             }
-
             if (owner != null) {
 //                itemModifications.add(meta -.)
                 metaModifications.add(meta -> ((SkullMeta) meta).setOwner(owner));
             }
-
             if (texture != null) {
                 metaModifications.add(meta -> {
                     SkullMeta skullMeta = (SkullMeta) meta;
@@ -300,7 +270,6 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
                     }
                 });
             }
-
             if (skin != null) {
                 metaModifications.add(meta -> {
                     SkullMeta skullMeta = (SkullMeta) meta;
@@ -316,21 +285,16 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
                     }
                 });
             }
-
             return getThis();
         }
-
     }*/
 
     /*public class LeatherArmorBuilder {
-
         private Color color;
-
         public LeatherArmorBuilder setColor(Color color) {
             this.color = color;
             return this;
         }
-
         public B apply() {
             if (color != null) {
                 metaModifications.add(meta -> {
@@ -340,30 +304,24 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             }
             return getThis();
         }
-
     }*/
 
     /*    public class PotionBuilder {
-
         private PotionEffectType mainEffectType;
         private List<PotionEffect> effects = new ArrayList<>();
         private Color color;
-
         public PotionBuilder mainEffectType(PotionEffectType type) {
             mainEffectType = type;
             return this;
         }
-
         public PotionBuilder customEffect(PotionEffect effect) {
             effects.add(effect);
             return this;
         }
-
         public PotionBuilder color(Color color) {
             this.color = color;
             return this;
         }
-
         public B apply() {
             if (mainEffectType != null) {
                 metaModifications.add(meta -> ((PotionMeta) meta).setMainEffect(mainEffectType));
@@ -376,22 +334,16 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             }
             return getThis();
         }
-
     }
-
     public class BannerBuilder {
-
         private final List<Pattern> patterns = new ArrayList<>();
-
         public BannerBuilder addPattern(Pattern pattern) {
             patterns.add(pattern);
             return this;
         }
-
         public BannerBuilder addPattern(DyeColor color, PatternType type) {
             return addPattern(new Pattern(color, type));
         }
-
         public B apply() {
             if (!patterns.isEmpty()) {
                 metaModifications.add(meta -> {
@@ -401,7 +353,6 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
             }
             return getThis();
         }
-
     }*/
 
 }

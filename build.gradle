@@ -41,6 +41,8 @@ dependencies {
     )
 }
 
+compileJava.options.encoding = 'UTF-8'
+
 jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
@@ -78,6 +80,6 @@ publishing {
             artifactId project.name
             version project.version
             artifact jar
-        }\
+        }
     }
 }

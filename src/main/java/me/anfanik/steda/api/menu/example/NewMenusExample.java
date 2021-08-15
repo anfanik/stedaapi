@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 
-public class NewMenusExample {
+/*public class NewMenusExample {
 
     static {
         MenuItem.createDynamic(session -> new ItemStack(Material.AIR));
@@ -50,11 +50,11 @@ public class NewMenusExample {
                 .item('r', MenuItem.createStatic(ItemBuilder.fromMaterial(Material.BARRIER)
                         .setName("Обновить"),
                         (session, click) -> session.update()))
-                .items('+', new ArrayList<>() /* Тут чиста лист кнопок, которые будут ставиться */,
+                .items('+', new ArrayList<>() *//* Тут чиста лист кнопок, которые будут ставиться *//*,
                         MenuItem.createStatic(ItemBuilder.fromMaterial(Material.BARRIER)
                             .setName("Сори больше нет кнопок")
                             .setLore("Чё я тебе, их рожу что ли?")))
                 .build();
     }
 
-}
+}*/
