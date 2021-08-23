@@ -6,10 +6,18 @@ import lombok.Getter;
 import me.anfanik.steda.api.wrapped.craft.WrappedCraftItemStack;
 import me.anfanik.steda.api.wrapped.nms.WrappedNbtTagCompound;
 import me.anfanik.steda.api.wrapped.nms.WrappedNmsItemStack;
+import net.minecraft.server.v1_12_R1.NBTTagByte;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagInt;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -121,11 +129,13 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     /*    public LeatherArmorBuilder leatherArmorBuilder() {
         return new LeatherArmorBuilder();
-    }
+    }*/
+
     public PotionBuilder potionBuilder() {
         return new PotionBuilder();
     }
-    public BannerBuilder bannerBuilder() {
+
+    /* public BannerBuilder bannerBuilder() {
         return new BannerBuilder();
     }*/
 
@@ -306,35 +316,47 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
         }
     }*/
 
-    /*    public class PotionBuilder {
-        private PotionEffectType mainEffectType;
-        private List<PotionEffect> effects = new ArrayList<>();
+    public class PotionBuilder {
+        private final List<PotionEffect> effects = new ArrayList<>();
         private Color color;
-        public PotionBuilder mainEffectType(PotionEffectType type) {
-            mainEffectType = type;
-            return this;
-        }
+
         public PotionBuilder customEffect(PotionEffect effect) {
             effects.add(effect);
             return this;
         }
+
         public PotionBuilder color(Color color) {
             this.color = color;
             return this;
         }
+
         public B apply() {
-            if (mainEffectType != null) {
-                metaModifications.add(meta -> ((PotionMeta) meta).setMainEffect(mainEffectType));
-            }
             if (!effects.isEmpty()) {
-                metaModifications.add(meta -> effects.forEach(effect -> ((PotionMeta) meta).addCustomEffect(effect, true)));
-            }
-            if (color != null) {
-                metaModifications.add(meta -> ((PotionMeta) meta).setColor(color));
+                itemModifications.add(item -> {
+                    NBTTagCompound customEffect = item.handle.getOrCreateTag();
+                    NBTTagList potioneffect = new NBTTagList();
+
+                    for (PotionEffect effect : effects) {
+                        NBTTagCompound effectCustom = new NBTTagCompound();
+                        effectCustom.set("Id", new NBTTagByte((byte) effect.type.id));
+                        effectCustom.set("Amplifier", new NBTTagByte((byte) effect.amplifier));
+                        effectCustom.set("Duration", new NBTTagInt(effect.duration));
+                        effectCustom.set("ShowParticles", new NBTTagByte((byte) 1));
+
+                        potioneffect.add(effectCustom);
+                    }
+
+                    customEffect.set("CustomPotionEffects", potioneffect);
+                    if (color != null) {
+                        customEffect.set("CustomPotionColor", new NBTTagInt(color.asRGB()));
+                    }
+                });
             }
             return getThis();
         }
     }
+
+    /*
     public class BannerBuilder {
         private final List<Pattern> patterns = new ArrayList<>();
         public BannerBuilder addPattern(Pattern pattern) {
