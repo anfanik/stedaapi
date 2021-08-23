@@ -160,7 +160,6 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MaterialItemBuilder extends ItemBuilder<MaterialItemBuilder> {
-
         private Material material;
 
         public MaterialItemBuilder setMaterial(Material material) {
@@ -189,9 +188,8 @@ public abstract class ItemBuilder<B extends ItemBuilder<?>> {
     }
 
     public class NbtBuilder {
-
-        private Map<String, String> nbtTags = new HashMap<>();
-        private List<String> tagsToRemove = new ArrayList<>();
+        private final Map<String, String> nbtTags = new HashMap<>();
+        private final List<String> tagsToRemove = new ArrayList<>();
 
         public NbtBuilder setTag(String key, String value) {
             nbtTags.put(key, value);
