@@ -18,7 +18,7 @@ public class StedaApi {
         new PingCommand();
 
         if (pluginManager.getPlugin("Sharkly") != null) {
-            plugin.getLogger().info("Initializing a integration with the Sharkly.");
+            plugin.getLogger().info("Initializing integration with Sharkly.");
             Formatter.addFormatter(TextUtility::colorize);
         }
     }

@@ -7,10 +7,8 @@ public class Bootstrap extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println("Initializing StedaApi..");
+        getLogger().info("Initializing StedaApi..");
         StedaApi.initialize(this);
-        System.out.println("Initializing Yoichi..");
-        System.out.println("Current version: " + MinecraftVersion.getCurrentVersion());
     }
 
 }

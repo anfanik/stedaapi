@@ -26,6 +26,10 @@ public class SidebarService implements Listener {
 
     private final Map<UUID, Sidebar> sidebars = new HashMap<>();
 
+    public Sidebar get(Player player) {
+        return sidebars.get(player);
+    }
+
     public void show(Player player, Sidebar sidebar) {
         sidebar.show(player);
         sidebars.put(player.getUniqueId(), sidebar);
