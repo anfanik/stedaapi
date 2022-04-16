@@ -52,7 +52,7 @@ tasks.with {
 publishing {
     repositories {
         maven {
-            url = 'https://repository.anfanik.me/private/'
+            url = 'https://repository.anfanik.me/public/'
             credentials {
                 username System.getenv('A5K_USERNAME')
                 password System.getenv('A5K_PASSWORD')
