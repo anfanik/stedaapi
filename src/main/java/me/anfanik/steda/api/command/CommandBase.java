@@ -9,9 +9,12 @@ import me.anfanik.steda.api.command.executor.ConsoleExecutor;
 import me.anfanik.steda.api.command.executor.Executor;
 import me.anfanik.steda.api.command.executor.PlayerExecutor;
 import me.anfanik.steda.api.utility.TextUtility;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static java.lang.String.format;
 
 public abstract class CommandBase {
 
@@ -227,7 +230,13 @@ public abstract class CommandBase {
                     subcommands.values().stream()
                             .distinct()
                             .filter(subcommand -> subcommand != this)
-                            .forEach(subcommand -> lines.add("&e  " + subcommand.getLabel()));
+                            .forEach(subcommand -> {
+                                if (subcommand.getDescription() != null) {
+                                    lines.add(format("&e  %s &7- &r%s", subcommand.getLabel(), subcommand.getDescription()));
+                                } else {
+                                    lines.add(format("&e  %s", subcommand.getLabel()));
+                                }
+                            });
                     executor.sendCommandMessage(TextUtility.mergeLines(lines));
                 } else {
                     executor.sendCommandMessage("Подкоманды не найдены.");
