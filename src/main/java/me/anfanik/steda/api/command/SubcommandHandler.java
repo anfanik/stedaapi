@@ -11,6 +11,8 @@ public @interface SubcommandHandler {
 
     String[] value(); // Aliases
 
-    boolean ignoreParentAccessChecks = false;
+    String description() default "";
+
+    boolean ignoreParentAccessChecks() default false;
 
 }

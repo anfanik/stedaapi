@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CommandHandler {
 
-    boolean ignoreAccessChecks = false;
+    String description() default "";
 
 }

@@ -119,4 +119,10 @@ public abstract class Command extends CommandBase {
         loadSubcommands();
     }
 
+    @Override
+    public void setDescription(String description) {
+        super.setDescription(description);
+        handle.setDescription(description);
+    }
+
 }

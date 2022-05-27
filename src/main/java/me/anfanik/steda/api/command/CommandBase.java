@@ -20,6 +20,10 @@ public abstract class CommandBase {
     private boolean ignoreParentsChecks = false;
 
     @Getter
+    @Setter
+    private String description;
+
+    @Getter
     private final String[] aliases;
     @Getter
     @Setter
@@ -196,6 +200,10 @@ public abstract class CommandBase {
                     }
                 }
             };
+
+            if (handler.description() != null) {
+                setDescription(handler.description());
+            }
         }
         //Legacy support
         if (handler == null) {
@@ -275,7 +283,10 @@ public abstract class CommandBase {
                     }
                 }
             };
-            handle.setIgnoreParentsChecks(handle.isIgnoreParentsChecks());
+            if (handler.description() != null) {
+                handle.setDescription(handler.description());
+            }
+            handle.setIgnoreParentsChecks(handler.ignoreParentAccessChecks());
             handle.loadSubcommands();
             addSubcommand(handle);
         }
