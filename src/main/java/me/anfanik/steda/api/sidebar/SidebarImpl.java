@@ -2,15 +2,14 @@ package me.anfanik.steda.api.sidebar;
 
 import lombok.Getter;
 import me.anfanik.steda.api.utility.TextUtility;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,14 +19,11 @@ public class SidebarImpl implements Sidebar {
 
     @Getter
     private final String name;
-
-    @Getter
-    private Function<Player, String> titleGenerator = player -> "";
-
     private final Map<UUID, Scoreboard> scoreboards = new ConcurrentHashMap<>();
-
     @Getter
     private final Row[] rows;
+    @Getter
+    private Function<Player, String> titleGenerator = player -> "";
 
     public SidebarImpl(String name, Row[] rows) {
         this.name = name;
@@ -41,44 +37,13 @@ public class SidebarImpl implements Sidebar {
         }
     }
 
-    public String[] splitText(String text) {
-        String[] parts = new String[2];
-
-        ChatColor firstColor = ChatColor.WHITE, secondColor = null;
-        Character previousSymbol = null;
-
-        parts[0] = "";
-        for(int index = 0; index < text.length() / 2; index++){
-            char symbol = text.charAt(index);
-
-            if(previousSymbol != null){
-                ChatColor color = parseColor(new char[] {previousSymbol, symbol});
-
-                if(color != null){
-                    if(color.isFormat()) {
-                        secondColor = color;
-                    } else {
-                        firstColor = color;
-                        secondColor = null;
-                    }
-                }
-            }
-
-            parts[0] += symbol;
-            previousSymbol = symbol;
-        }
-
-        parts[1] = firstColor + "" + (secondColor != null ? secondColor : "") + text.substring(text.length() / 2);
-        return parts;
-    }
-
-    private static ChatColor parseColor(char[] chars){
-        for (ChatColor color : ChatColor.values()){
+    private static ChatColor parseColor(char[] chars) {
+        for (ChatColor color : ChatColor.values()) {
             char[] colorChars = color.toString().toCharArray();
 
             int same = 0;
-            for(int i = 0; i < 2; i++){
-                if(colorChars[i] == chars[i])
+            for (int i = 0; i < 2; i++) {
+                if (colorChars[i] == chars[i])
                     same++;
             }
 
@@ -88,6 +53,33 @@ public class SidebarImpl implements Sidebar {
         }
 
         return null;
+    }
+
+    public String[] splitText(String text) {
+        String[] parts = new String[2];
+
+        ChatColor firstColor = ChatColor.WHITE, secondColor = null;
+        Character previousSymbol = null;
+
+        parts[0] = "";
+        for (int index = 0; index < text.length() / 2; index++) {
+            char symbol = text.charAt(index);
+
+            if (previousSymbol != null) {
+                ChatColor color = parseColor(new char[]{previousSymbol, symbol});
+
+                if (color != null) {
+                    secondColor = color;
+                    firstColor = color;
+                }
+            }
+
+            parts[0] += symbol;
+            previousSymbol = symbol;
+        }
+
+        parts[1] = firstColor + "" + (secondColor != null ? secondColor : "") + text.substring(text.length() / 2);
+        return parts;
     }
 
     private Scoreboard getScoreboard(Player player) {
@@ -104,7 +96,7 @@ public class SidebarImpl implements Sidebar {
         for (int index = 0; index < rows.length; index++) {
             Row row = rows[index];
             Team team = scoreboard.registerNewTeam(String.format("%s.%s", name, row.getId()));
-            ChatColor chatColor = ChatColor.values()[index];
+            net.md_5.bungee.api.ChatColor chatColor = ChatColor.values()[index];
             team.addEntry(chatColor.toString());
             objective.getScore(chatColor.toString()).setScore(15 - index);
             row.update(player);
